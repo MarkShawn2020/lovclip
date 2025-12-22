@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">
-  <img src="assets/logo.png" width="32" height="32" alt="Logo" align="top">
+  <img src="assets/logo.svg" width="32" height="32" alt="Logo" align="top">
   LovClip
 </h1>
 
