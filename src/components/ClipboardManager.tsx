@@ -481,6 +481,7 @@ export default function ClipboardManager() {
   return (
     <div className="clipboard-manager">
       <div className="header">
+        <div className="drag-handle" title="拖拽移动窗口">⋮⋮</div>
         <div className="search-container">
           <div className="search-icon">🔍</div>
           <input
@@ -641,7 +642,7 @@ export default function ClipboardManager() {
             alt="LovPen Logo" 
             className="brand-logo"
           />
-          <span className="brand-name">LovPen</span>
+          <span className="brand-name">Lovclip</span>
           <span className="brand-tagline">Beyond Copy & Paste</span>
         </div>
       </div>

@@ -23,7 +23,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+}
+
+.drag-handle {
+    cursor: grab;
+    padding: 4px 8px;
+    color: var(--color-text-faded);
+    font-size: 14px;
+    letter-spacing: -2px;
+    user-select: none;
     -webkit-app-region: drag;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
 }
 
 .search-container {
@@ -587,6 +601,10 @@
 
   .header {
     background: rgba(61, 61, 58, 0.4);
+  }
+
+  .drag-handle {
+    color: var(--color-text-dark-faded);
   }
 
   .search-input {

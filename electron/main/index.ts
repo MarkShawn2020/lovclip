@@ -355,13 +355,12 @@ async function createWindow() {
         frame: false,
         transparent: true,
         hasShadow: false,
-        titleBarStyle: 'hidden',
-        trafficLightPosition: { x: -100, y: -100 }, // 隐藏红绿灯
         backgroundColor: 'rgba(0,0,0,0)', // 透明背景
         // 前台显示且可交互的关键配置
         alwaysOnTop: true,
         skipTaskbar: true,
         resizable: true,
+        movable: true, // 允许拖拽移动
         minimizable: false,
         maximizable: false,
         closable: false,
