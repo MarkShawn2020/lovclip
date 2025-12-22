@@ -30,11 +30,16 @@ pub fn setup_main_window(window: &WebviewWindow) -> Result<(), String> {
             // Make window background clear
             ns_window.setBackgroundColor_(cocoa::appkit::NSColor::clearColor(cocoa::base::nil));
 
-            // Get content view and set corner radius
+            // Get content view and enable layer-backing
             let content_view: id = ns_window.contentView();
+            let _: () = msg_send![content_view, setWantsLayer: true];
+
+            // Set corner radius on the layer
             let layer: id = msg_send![content_view, layer];
-            let _: () = msg_send![layer, setCornerRadius: 16.0_f64];
-            let _: () = msg_send![layer, setMasksToBounds: true];
+            if !layer.is_null() {
+                let _: () = msg_send![layer, setCornerRadius: 16.0_f64];
+                let _: () = msg_send![layer, setMasksToBounds: true];
+            }
         }
     }
 

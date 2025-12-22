@@ -554,11 +554,9 @@ export default function ClipboardManager() {
                   <div className="item-text truncate">
                     {item.content}
                   </div>
-                  {item.size && (
-                    <div className="item-size">{item.size}</div>
-                  )}
                 </div>
                 <div className="item-meta">
+                  <div className="item-size">{item.size || ''}</div>
                   {starredItems.has(item.id) && (
                     <div className="item-star-indicator"><StarFilledIcon className="w-3.5 h-3.5 text-primary" /></div>
                   )}
