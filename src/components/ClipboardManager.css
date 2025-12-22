@@ -28,12 +28,14 @@
 
 .drag-handle {
     cursor: grab;
-    padding: 4px 8px;
+    padding: 8px 12px;
     color: var(--color-text-faded);
     font-size: 14px;
     letter-spacing: -2px;
     user-select: none;
     -webkit-app-region: drag;
+    background: rgba(200, 195, 185, 0.5);
+    border-radius: var(--radius-s);
 }
 
 .drag-handle:active {
