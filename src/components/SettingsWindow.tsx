@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, ComponentType } from 'react'
 import { useAtom } from 'jotai'
 import { settingsAtom, settingsWindowPositionAtom } from '../store/atoms'
+import {
+  GearIcon,
+  MixerHorizontalIcon,
+  KeyboardIcon,
+  DownloadIcon,
+  StackIcon,
+} from '@radix-ui/react-icons'
 import './SettingsWindow.css'
 
 interface StorageSettings {
@@ -250,12 +257,12 @@ export default function SettingsWindow() {
   }
 
   // 侧边栏菜单项
-  const sidebarItems = [
-    { id: 'general', name: '通用', icon: '⚙️' },
-    { id: 'appearance', name: '外观', icon: '🎨' },
-    { id: 'shortcuts', name: '快捷键', icon: '⌨️' },
-    { id: 'storage', name: '存储', icon: '💾' },
-    { id: 'data', name: '数据管理', icon: '🗂️' }
+  const sidebarItems: { id: string; name: string; icon: ComponentType<{ className?: string }> }[] = [
+    { id: 'general', name: '通用', icon: GearIcon },
+    { id: 'appearance', name: '外观', icon: MixerHorizontalIcon },
+    { id: 'shortcuts', name: '快捷键', icon: KeyboardIcon },
+    { id: 'storage', name: '存储', icon: DownloadIcon },
+    { id: 'data', name: '数据管理', icon: StackIcon }
   ]
 
   // 渲染当前选中的设置面板
@@ -530,16 +537,19 @@ export default function SettingsWindow() {
 
       <div className="settings-body">
         <div className="settings-sidebar">
-          {sidebarItems.map(item => (
-            <button
-              key={item.id}
-              className={`sidebar-item ${activeSection === item.id ? 'active' : ''}`}
-              onClick={() => setActiveSection(item.id)}
-            >
-              <span className="sidebar-icon">{item.icon}</span>
-              <span className="sidebar-label">{item.name}</span>
-            </button>
-          ))}
+          {sidebarItems.map(item => {
+            const IconComponent = item.icon
+            return (
+              <button
+                key={item.id}
+                className={`sidebar-item ${activeSection === item.id ? 'active' : ''}`}
+                onClick={() => setActiveSection(item.id)}
+              >
+                <span className="sidebar-icon"><IconComponent className="w-4 h-4" /></span>
+                <span className="sidebar-label">{item.name}</span>
+              </button>
+            )
+          })}
         </div>
 
         <div className="settings-content">

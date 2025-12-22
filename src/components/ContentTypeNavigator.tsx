@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem } from '../types/archive-types'
+import { useState, useEffect, ComponentType } from 'react'
+import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem, AllCategoryIcon } from '../types/archive-types'
 import { ClipboardItem } from '../types/tauri'
 import './ContentTypeNavigator.css'
 
@@ -82,7 +82,7 @@ export default function ContentTypeNavigator({
   const allContentTypeConfig = {
     id: 'all' as const,
     name: '全部',
-    icon: '📚',
+    icon: AllCategoryIcon,
     layoutType: 'mixed' as const
   }
 
@@ -94,23 +94,24 @@ export default function ContentTypeNavigator({
           className={`content-type-tab ${selectedContentType === 'all' ? 'active' : ''}`}
           onClick={() => onContentTypeChange('all')}
         >
-          <span className="tab-icon">{allContentTypeConfig.icon}</span>
+          <span className="tab-icon"><AllCategoryIcon className="w-4 h-4" /></span>
           <span className="tab-label">{allContentTypeConfig.name}</span>
           <span className="tab-count">{contentTypeCounts.all}</span>
         </button>
-        
+
         {/* Individual content type tabs */}
         {(Object.keys(CONTENT_TYPE_CONFIGS) as ContentType[])
           .filter(type => contentTypeCounts[type] > 0)
           .map(contentType => {
             const config = CONTENT_TYPE_CONFIGS[contentType]
+            const IconComponent = config.icon
             return (
               <button
                 key={contentType}
                 className={`content-type-tab ${selectedContentType === contentType ? 'active' : ''}`}
                 onClick={() => onContentTypeChange(contentType)}
               >
-                <span className="tab-icon">{config.icon}</span>
+                <span className="tab-icon"><IconComponent className="w-4 h-4" /></span>
                 <span className="tab-label">{config.name}</span>
                 <span className="tab-count">{contentTypeCounts[contentType]}</span>
               </button>

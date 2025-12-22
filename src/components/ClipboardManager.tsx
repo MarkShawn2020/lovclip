@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
 import { ClipboardItem } from '../types/tauri'
-import { 
-  clipboardItemsAtom, 
-  searchQueryAtom, 
-  selectedIndexAtom, 
+import {
+  clipboardItemsAtom,
+  searchQueryAtom,
+  selectedIndexAtom,
   filteredItemsAtom,
   mainHistoryItemsAtom,
   starredItemsAtom,
@@ -12,6 +12,19 @@ import {
   resetSelectedIndexAtom
 } from '../store/atoms'
 import PermissionDialog from './PermissionDialog'
+import {
+  MagnifyingGlassIcon,
+  ArchiveIcon,
+  ImageIcon,
+  FileIcon,
+  FileTextIcon,
+  StarIcon,
+  StarFilledIcon,
+  ClipboardIcon,
+  Share1Icon,
+  TrashIcon,
+  Cross2Icon,
+} from '@radix-ui/react-icons'
 import './ClipboardManager.css'
 
 export default function ClipboardManager() {
@@ -289,11 +302,11 @@ export default function ClipboardManager() {
   const getItemIcon = (type: string) => {
     switch (type) {
       case 'image':
-        return '🖼️'
+        return <ImageIcon className="w-4 h-4" />
       case 'file':
-        return '📁'
+        return <FileIcon className="w-4 h-4" />
       default:
-        return '📄'
+        return <FileTextIcon className="w-4 h-4" />
     }
   }
 
@@ -481,9 +494,8 @@ export default function ClipboardManager() {
   return (
     <div className="clipboard-manager">
       <div className="header">
-        <div className="drag-handle" title="拖拽移动窗口">⋮⋮</div>
         <div className="search-container">
-          <div className="search-icon">🔍</div>
+          <div className="search-icon"><MagnifyingGlassIcon className="w-4 h-4" /></div>
           <input
             ref={searchInputRef}
             type="text"
@@ -506,7 +518,7 @@ export default function ClipboardManager() {
             onClick={handleOpenArchive}
             title="打开档案库 (A键)"
           >
-            📚 档案库
+            <ArchiveIcon className="w-4 h-4" /> 档案库
           </button>
         </div>
       </div>
@@ -548,7 +560,7 @@ export default function ClipboardManager() {
                 </div>
                 <div className="item-meta">
                   {starredItems.has(item.id) && (
-                    <div className="item-star-indicator">⭐</div>
+                    <div className="item-star-indicator"><StarFilledIcon className="w-3.5 h-3.5 text-primary" /></div>
                   )}
                   {getShortcutKey(index) && (
                     <div className="item-shortcut">
@@ -581,26 +593,26 @@ export default function ClipboardManager() {
                 
                 <div className="preview-actions">
                   <div className="action-buttons">
-                    <button 
+                    <button
                       className="action-btn star-btn"
                       onClick={() => handleToggleStar(selectedItem)}
                       title={starredItems.has(selectedItem.id) ? "取消收藏" : "收藏到档案库 (S键)"}
                     >
-                      {starredItems.has(selectedItem.id) ? '⭐' : '☆'}
+                      {starredItems.has(selectedItem.id) ? <StarFilledIcon className="w-4 h-4" /> : <StarIcon className="w-4 h-4" />}
                     </button>
-                    <button 
+                    <button
                       className="action-btn share-btn"
                       onClick={() => handleShareCard(selectedItem)}
                       title="生成分享卡片"
                     >
-                      📤
+                      <Share1Icon className="w-4 h-4" />
                     </button>
-                    <button 
+                    <button
                       className="action-btn delete-btn"
                       onClick={() => handleDeleteItem(selectedItem)}
                       title="删除"
                     >
-                      🗑️
+                      <TrashIcon className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -628,7 +640,7 @@ export default function ClipboardManager() {
             </div>
           ) : (
             <div className="preview-placeholder">
-              <div className="placeholder-icon">📋</div>
+              <div className="placeholder-icon"><ClipboardIcon className="w-8 h-8" /></div>
               <div className="placeholder-text">Select an item to preview</div>
             </div>
           )}
@@ -637,13 +649,12 @@ export default function ClipboardManager() {
       
       <div className="footer">
         <div className="branding">
-          <img 
-            src="/src/assets/logo/LovPen-pure-logo.svg" 
-            alt="LovPen Logo" 
+          <img
+            src="/src/assets/logo/lovstudio-logo_primary.svg"
+            alt="Lovstudio Logo"
             className="brand-logo"
           />
           <span className="brand-name">Lovclip</span>
-          <span className="brand-tagline">Beyond Copy & Paste</span>
         </div>
       </div>
       
@@ -652,7 +663,7 @@ export default function ClipboardManager() {
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
           <div className="fullscreen-content" onClick={(e) => e.stopPropagation()}>
             <button className="fullscreen-close" onClick={handleCloseFullscreen}>
-              ✕
+              <Cross2Icon className="w-5 h-5" />
             </button>
             <img 
               src={fullscreenImage.preview} 

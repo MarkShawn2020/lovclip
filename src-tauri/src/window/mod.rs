@@ -3,6 +3,13 @@ use tauri::{AppHandle, Manager, WebviewWindow};
 #[cfg(target_os = "macos")]
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 
+#[cfg(target_os = "macos")]
+use cocoa::appkit::NSWindow;
+#[cfg(target_os = "macos")]
+use cocoa::base::id;
+#[cfg(target_os = "macos")]
+use objc::{msg_send, sel, sel_impl};
+
 /// Setup main window with platform-specific effects
 pub fn setup_main_window(window: &WebviewWindow) -> Result<(), String> {
     #[cfg(target_os = "macos")]
@@ -12,9 +19,23 @@ pub fn setup_main_window(window: &WebviewWindow) -> Result<(), String> {
             window,
             NSVisualEffectMaterial::HudWindow,
             Some(NSVisualEffectState::Active),
-            Some(12.0),
+            Some(16.0),
         )
         .map_err(|e| e.to_string())?;
+
+        // Set window corner radius using native API
+        unsafe {
+            let ns_window = window.ns_window().map_err(|e| e.to_string())? as id;
+
+            // Make window background clear
+            ns_window.setBackgroundColor_(cocoa::appkit::NSColor::clearColor(cocoa::base::nil));
+
+            // Get content view and set corner radius
+            let content_view: id = ns_window.contentView();
+            let layer: id = msg_send![content_view, layer];
+            let _: () = msg_send![layer, setCornerRadius: 16.0_f64];
+            let _: () = msg_send![layer, setMasksToBounds: true];
+        }
     }
 
     Ok(())
@@ -26,6 +47,7 @@ pub fn toggle_window(app: &AppHandle) {
         if window.is_visible().unwrap_or(false) {
             let _ = window.hide();
         } else {
+            let _ = window.center();
             let _ = window.show();
             let _ = window.set_focus();
         }

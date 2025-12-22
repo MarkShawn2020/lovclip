@@ -242,11 +242,17 @@ pub fn run() {
         .manage(state)
         // Setup
         .setup(move |app| {
-            // Setup main window effects
+            // Setup main window effects and ensure it's hidden on startup
             if let Some(window) = app.get_webview_window("main") {
                 if let Err(e) = window::setup_main_window(&window) {
                     log::error!("Failed to setup main window: {}", e);
                 }
+                let _ = window.hide();
+            }
+
+            // Ensure archive window is hidden on startup
+            if let Some(archive) = app.get_webview_window("archive") {
+                let _ = archive.hide();
             }
 
             // Register global shortcut

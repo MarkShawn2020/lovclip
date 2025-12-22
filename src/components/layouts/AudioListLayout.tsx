@@ -1,5 +1,9 @@
 import { useCallback } from 'react'
 import { EnhancedClipboardItem } from '../../types/archive-types'
+import {
+  SpeakerLoudIcon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
 import './AudioListLayout.css'
 
 interface AudioListLayoutProps {
@@ -58,7 +62,7 @@ export default function AudioListLayout({
     <div className="audio-list-layout">
       {items.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🎵</div>
+          <div className="empty-icon"><SpeakerLoudIcon className="w-8 h-8" /></div>
           <div className="empty-title">还没有音频内容</div>
           <div className="empty-description">
             复制音频文件到剪切板并收藏，它们就会出现在这里
@@ -92,12 +96,12 @@ export default function AudioListLayout({
                     <span className="audio-time">
                       {formatTimestamp(item.starredAt || item.timestamp)}
                     </span>
-                    <button 
+                    <button
                       className="unstar-btn"
                       onClick={(e) => handleUnstar(e, item)}
                       title="取消收藏"
                     >
-                      ⭐
+                      <StarFilledIcon className="w-4 h-4 text-primary" />
                     </button>
                   </div>
                 </div>

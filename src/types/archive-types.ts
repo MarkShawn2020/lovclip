@@ -1,21 +1,34 @@
 // Enhanced content type system for Archive Library
+import {
+  FileTextIcon,
+  ImageIcon,
+  SpeakerLoudIcon,
+  VideoIcon,
+  ReaderIcon,
+  CubeIcon,
+  ArchiveIcon,
+} from '@radix-ui/react-icons'
+import { ComponentType } from 'react'
 
 export type ContentType = 'text' | 'image' | 'audio' | 'video' | 'document' | 'other'
 
 export interface ContentTypeConfig {
   id: ContentType
   name: string
-  icon: string
+  icon: ComponentType<{ className?: string }>
   extensions: string[]
   mimeTypes: string[]
   layoutType: 'grid' | 'waterfall' | 'list' | 'tiles'
 }
 
+// Icon for 'all' category
+export const AllCategoryIcon = ArchiveIcon
+
 export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   text: {
     id: 'text',
     name: '文本',
-    icon: '📄',
+    icon: FileTextIcon,
     extensions: ['.txt', '.md', '.json', '.xml', '.html'],
     mimeTypes: ['text/plain', 'text/markdown', 'application/json', 'text/html'],
     layoutType: 'list'
@@ -23,7 +36,7 @@ export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   image: {
     id: 'image',
     name: '图像',
-    icon: '🖼️',
+    icon: ImageIcon,
     extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.tiff'],
     mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
     layoutType: 'waterfall'
@@ -31,7 +44,7 @@ export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   audio: {
     id: 'audio',
     name: '音频',
-    icon: '🎵',
+    icon: SpeakerLoudIcon,
     extensions: ['.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a'],
     mimeTypes: ['audio/mpeg', 'audio/wav', 'audio/flac', 'audio/aac', 'audio/ogg'],
     layoutType: 'list'
@@ -39,7 +52,7 @@ export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   video: {
     id: 'video',
     name: '视频',
-    icon: '🎬',
+    icon: VideoIcon,
     extensions: ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v'],
     mimeTypes: ['video/mp4', 'video/avi', 'video/quicktime', 'video/webm'],
     layoutType: 'grid'
@@ -47,7 +60,7 @@ export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   document: {
     id: 'document',
     name: '文档',
-    icon: '📋',
+    icon: ReaderIcon,
     extensions: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'],
     mimeTypes: ['application/pdf', 'application/msword', 'application/vnd.ms-excel'],
     layoutType: 'list'
@@ -55,7 +68,7 @@ export const CONTENT_TYPE_CONFIGS: Record<ContentType, ContentTypeConfig> = {
   other: {
     id: 'other',
     name: '其他',
-    icon: '📦',
+    icon: CubeIcon,
     extensions: [],
     mimeTypes: [],
     layoutType: 'grid'

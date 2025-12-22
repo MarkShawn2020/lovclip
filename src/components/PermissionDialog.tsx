@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react'
+import {
+  LockClosedIcon,
+  MagicWandIcon,
+  TargetIcon,
+  LightningBoltIcon,
+  ReloadIcon,
+  GearIcon,
+  CheckCircledIcon,
+  Cross2Icon,
+} from '@radix-ui/react-icons'
 import './PermissionDialog.css'
 
 interface PermissionDialogProps {
@@ -63,7 +73,7 @@ export default function PermissionDialog({ isOpen, onClose, onPermissionGranted 
       <div className="permission-dialog">
         <div className="permission-dialog-header">
           <h2>启用增强功能</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="close-button" onClick={onClose}><Cross2Icon className="w-4 h-4" /></button>
         </div>
         
         <div className="permission-dialog-content">
@@ -76,21 +86,21 @@ export default function PermissionDialog({ isOpen, onClose, onPermissionGranted 
           
           {permissionStatus === 'denied' && !showInstructions && (
             <div className="permission-request">
-              <div className="permission-icon">🔒</div>
+              <div className="permission-icon"><LockClosedIcon className="w-8 h-8" /></div>
               <h3>需要辅助功能权限</h3>
               <p>为了实现 Alfred 风格的直接文本插入功能，LovPen 需要访问辅助功能权限。</p>
               <p>这将允许 LovPen 直接将文本插入到其他应用程序的输入框中，而不需要手动粘贴。</p>
-              
+
               <div className="permission-features">
                 <h4>启用后您将获得：</h4>
                 <ul>
-                  <li>✨ 直接文本插入 - 无需手动粘贴</li>
-                  <li>🎯 智能焦点检测 - 自动识别输入框</li>
-                  <li>⚡ 更流畅的用户体验</li>
-                  <li>🔄 与 Alfred 相同的交互方式</li>
+                  <li><MagicWandIcon className="w-4 h-4 inline mr-1" /> 直接文本插入 - 无需手动粘贴</li>
+                  <li><TargetIcon className="w-4 h-4 inline mr-1" /> 智能焦点检测 - 自动识别输入框</li>
+                  <li><LightningBoltIcon className="w-4 h-4 inline mr-1" /> 更流畅的用户体验</li>
+                  <li><ReloadIcon className="w-4 h-4 inline mr-1" /> 与 Alfred 相同的交互方式</li>
                 </ul>
               </div>
-              
+
               <div className="permission-actions">
                 <button className="request-button" onClick={requestPermission}>
                   请求权限
@@ -112,7 +122,7 @@ export default function PermissionDialog({ isOpen, onClose, onPermissionGranted 
           
           {showInstructions && (
             <div className="permission-instructions">
-              <div className="instruction-icon">⚙️</div>
+              <div className="instruction-icon"><GearIcon className="w-8 h-8" /></div>
               <h3>手动设置权限</h3>
               <p>请按照以下步骤手动启用辅助功能权限：</p>
               
@@ -143,7 +153,7 @@ export default function PermissionDialog({ isOpen, onClose, onPermissionGranted 
           
           {permissionStatus === 'granted' && (
             <div className="permission-success">
-              <div className="success-icon">✅</div>
+              <div className="success-icon"><CheckCircledIcon className="w-8 h-8 text-green-600" /></div>
               <h3>权限已授予！</h3>
               <p>LovPen 现在可以直接将文本插入到其他应用程序中。</p>
               <p>享受 Alfred 风格的无缝体验吧！</p>

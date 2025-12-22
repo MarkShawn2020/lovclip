@@ -9,6 +9,8 @@
     position: relative;
     -webkit-app-region: no-drag;
     display: flex;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
     flex-direction: column;
     margin: 0;
     padding: 0;
@@ -314,8 +316,7 @@
     flex-direction: column;
     padding: 16px 16px 0 16px;
     overflow: hidden;
-    min-height: 200px;
-    max-height: calc(100vh - 200px);
+    min-height: 0;
 }
 
 .preview-header {
@@ -444,12 +445,15 @@
 
 .preview-content {
     flex: 1;
-    overflow: hidden;
-    margin: 16px;
-    padding: 8px;
+    overflow: auto;
+    margin: 0;
+    padding: 0;
     min-height: 0;
-    position: relative;
-    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .preview-text {
@@ -467,10 +471,6 @@
 }
 
 .preview-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;

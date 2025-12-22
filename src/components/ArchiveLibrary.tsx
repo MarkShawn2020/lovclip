@@ -1,10 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
 import { ClipboardItem } from '../types/tauri'
-import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem } from '../types/archive-types'
+import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem, AllCategoryIcon } from '../types/archive-types'
 import ImageWaterfallLayout from './layouts/ImageWaterfallLayout'
 import TextListLayout from './layouts/TextListLayout'
 import AudioListLayout from './layouts/AudioListLayout'
 import VideoGridLayout from './layouts/VideoGridLayout'
+import {
+  ArrowLeftIcon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
 
 interface ArchiveLibraryProps {
   onClose?: () => void
@@ -106,10 +110,10 @@ export default function ArchiveLibrary({ onClose }: ArchiveLibraryProps) {
       <header className="px-6 py-4 flex items-center gap-4 border-b border-border/50 [-webkit-app-region:drag]">
         {onClose && (
           <button
-            className="text-primary text-sm px-3 py-1.5 rounded-lg transition-colors hover:bg-primary/10 [-webkit-app-region:no-drag]"
+            className="text-primary text-sm px-3 py-1.5 rounded-lg transition-colors hover:bg-primary/10 [-webkit-app-region:no-drag] flex items-center gap-1"
             onClick={onClose}
           >
-            ← 返回
+            <ArrowLeftIcon className="w-4 h-4" /> 返回
           </button>
         )}
         <h1 className="font-serif text-lg font-semibold text-foreground">档案库</h1>
@@ -133,7 +137,8 @@ export default function ArchiveLibrary({ onClose }: ArchiveLibraryProps) {
             {contentTypes.map(type => {
               const count = contentTypeCounts[type]
               if (type !== 'all' && count === 0) return null
-              const config = type === 'all' ? { icon: '📚', name: '全部' } : CONTENT_TYPE_CONFIGS[type]
+              const config = type === 'all' ? { icon: AllCategoryIcon, name: '全部' } : CONTENT_TYPE_CONFIGS[type]
+              const IconComponent = config.icon
               const isActive = selectedContentType === type
               return (
                 <button
@@ -143,7 +148,7 @@ export default function ArchiveLibrary({ onClose }: ArchiveLibraryProps) {
                   }`}
                   onClick={() => setSelectedContentType(type)}
                 >
-                  <span className="text-base">{config.icon}</span>
+                  <IconComponent className="w-4 h-4" />
                   <span className="flex-1 font-medium">{config.name}</span>
                   <span className={`text-xs px-1.5 py-0.5 rounded ${isActive ? 'bg-primary-foreground/20' : 'bg-foreground/10'}`}>
                     {count}
@@ -168,13 +173,13 @@ function EmptyState({ searchQuery }: { searchQuery: string }) {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="w-16 h-16 rounded-xl bg-secondary/50 flex items-center justify-center mb-4">
-        <span className="text-3xl">⭐</span>
+        <StarFilledIcon className="w-8 h-8 text-primary" />
       </div>
       <h3 className="font-serif text-lg text-foreground mb-2">
         {searchQuery ? '没有找到匹配的内容' : '暂无收藏'}
       </h3>
       <p className="text-muted-foreground text-sm text-center max-w-[200px]">
-        {searchQuery ? '尝试修改搜索条件' : '点击 ⭐ 收藏剪贴板内容'}
+        {searchQuery ? '尝试修改搜索条件' : '点击收藏按钮收藏剪贴板内容'}
       </p>
     </div>
   )
@@ -224,7 +229,7 @@ function ArchiveCard({
           onClick={(e) => { e.stopPropagation(); onItemUnstar(item) }}
           title="取消收藏"
         >
-          ⭐
+          <StarFilledIcon className="w-4 h-4 text-primary" />
         </button>
       </div>
     </div>

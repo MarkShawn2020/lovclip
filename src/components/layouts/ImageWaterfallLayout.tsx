@@ -1,6 +1,10 @@
 import { useState, useCallback } from 'react'
 import Masonry from 'react-masonry-css'
 import { EnhancedClipboardItem } from '../../types/archive-types'
+import {
+  ImageIcon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
 import './ImageWaterfallLayout.css'
 
 interface ImageWaterfallLayoutProps {
@@ -71,7 +75,7 @@ export default function ImageWaterfallLayout({
     <div className="image-waterfall-layout">
       {items.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🖼️</div>
+          <div className="empty-icon"><ImageIcon className="w-8 h-8" /></div>
           <div className="empty-title">还没有图像内容</div>
           <div className="empty-description">
             复制图片到剪切板并收藏，它们就会出现在这里
@@ -108,19 +112,19 @@ export default function ImageWaterfallLayout({
                   </>
                 ) : (
                   <div className="image-fallback">
-                    <div className="fallback-icon">🖼️</div>
+                    <div className="fallback-icon"><ImageIcon className="w-8 h-8" /></div>
                     <div className="fallback-text">无法加载图片</div>
                   </div>
                 )}
                 
                 <div className="image-overlay">
                   <div className="image-actions">
-                    <button 
+                    <button
                       className="unstar-btn"
                       onClick={(e) => handleUnstar(e, item)}
                       title="取消收藏"
                     >
-                      ⭐
+                      <StarFilledIcon className="w-4 h-4 text-primary" />
                     </button>
                   </div>
                   

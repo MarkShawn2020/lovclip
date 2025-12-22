@@ -1,5 +1,10 @@
 import { useCallback } from 'react'
 import { EnhancedClipboardItem } from '../../types/archive-types'
+import {
+  FileTextIcon,
+  Link2Icon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
 import './TextListLayout.css'
 
 interface TextListLayoutProps {
@@ -35,30 +40,30 @@ export default function TextListLayout({
     return content.substring(0, maxLength) + '...'
   }
 
-  const getContentType = (content: string) => {
+  const getContentType = (content: string): { type: string; icon: React.ReactNode } => {
     // Detect different text content types
     try {
       JSON.parse(content)
-      return { type: 'JSON', icon: '{}' }
+      return { type: 'JSON', icon: <span className="font-mono text-xs">{'{}'}</span> }
     } catch {}
-    
+
     if (/<[a-z][\s\S]*>/i.test(content)) {
-      return { type: 'HTML', icon: '</>' }
+      return { type: 'HTML', icon: <span className="font-mono text-xs">{'</>'}</span> }
     }
-    
+
     if (/^#{1,6}\s/.test(content) || /\*\*.*\*\*/.test(content)) {
-      return { type: 'Markdown', icon: 'MD' }
+      return { type: 'Markdown', icon: <span className="font-mono text-xs">MD</span> }
     }
-    
+
     if (content.includes('@') && content.includes('.')) {
-      return { type: 'Email', icon: '@' }
+      return { type: 'Email', icon: <span className="font-mono text-xs">@</span> }
     }
-    
+
     if (/https?:\/\//.test(content)) {
-      return { type: 'URL', icon: '🔗' }
+      return { type: 'URL', icon: <Link2Icon className="w-4 h-4" /> }
     }
-    
-    return { type: 'Text', icon: 'T' }
+
+    return { type: 'Text', icon: <span className="font-mono text-xs">T</span> }
   }
 
   const getCharacterCount = (content: string) => {
@@ -74,7 +79,7 @@ export default function TextListLayout({
     <div className="text-list-layout">
       {items.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📄</div>
+          <div className="empty-icon"><FileTextIcon className="w-8 h-8" /></div>
           <div className="empty-title">还没有文本内容</div>
           <div className="empty-description">
             复制文本到剪切板并收藏，它们就会出现在这里
@@ -101,12 +106,12 @@ export default function TextListLayout({
                     <span className="text-time">
                       {formatTimestamp(item.starredAt || item.timestamp)}
                     </span>
-                    <button 
+                    <button
                       className="unstar-btn"
                       onClick={(e) => handleUnstar(e, item)}
                       title="取消收藏"
                     >
-                      ⭐
+                      <StarFilledIcon className="w-4 h-4 text-primary" />
                     </button>
                   </div>
                 </div>

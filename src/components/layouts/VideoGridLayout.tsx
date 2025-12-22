@@ -1,5 +1,10 @@
 import { useCallback } from 'react'
 import { EnhancedClipboardItem } from '../../types/archive-types'
+import {
+  VideoIcon,
+  PlayIcon,
+  StarFilledIcon,
+} from '@radix-ui/react-icons'
 import './VideoGridLayout.css'
 
 interface VideoGridLayoutProps {
@@ -72,7 +77,7 @@ export default function VideoGridLayout({
     <div className="video-grid-layout">
       {items.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🎬</div>
+          <div className="empty-icon"><VideoIcon className="w-8 h-8" /></div>
           <div className="empty-title">还没有视频内容</div>
           <div className="empty-description">
             复制视频文件到剪切板并收藏，它们就会出现在这里
@@ -96,9 +101,7 @@ export default function VideoGridLayout({
                 ) : (
                   <div className="thumbnail-placeholder">
                     <div className="play-icon">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
+                      <PlayIcon className="w-8 h-8" />
                     </div>
                   </div>
                 )}
@@ -108,12 +111,12 @@ export default function VideoGridLayout({
                     <div className="format-badge">
                       {getVideoFormat(item.metadata?.fileName || item.content)}
                     </div>
-                    <button 
+                    <button
                       className="unstar-btn"
                       onClick={(e) => handleUnstar(e, item)}
                       title="取消收藏"
                     >
-                      ⭐
+                      <StarFilledIcon className="w-4 h-4 text-primary" />
                     </button>
                   </div>
                   
