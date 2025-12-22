@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import tailwindcss from '@tailwindcss/vite'
+import { LovinspPlugin } from 'lovinsp'
 import pkg from './package.json'
 
 // https://vitejs.dev/config/
@@ -21,6 +22,7 @@ export default defineConfig(({ command }) => {
       },
     },
     plugins: [
+      LovinspPlugin({ bundler: 'vite' }),
       tailwindcss(),
       react(),
       electron({

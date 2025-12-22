@@ -1,30 +1,55 @@
 @import 'tailwindcss';
 
-/* LovClip Design System - Warm & Organic Palette */
+/* Lovstudio Warm Academic Theme - 暖学术风格 */
 @theme {
-  /* Primary color - warm terracotta */
-  --color-primary: #D97757;
-  
-  /* Light mode text colors */
+  /* Primary - 陶土色 Terracotta #CC785C */
+  --color-primary: #CC785C;
+  --color-primary-foreground: #FFFFFF;
+
+  /* Background - 暖米色 Warm Beige #F9F9F7 */
+  --color-background: #F9F9F7;
+  /* Foreground - 炭灰色 Charcoal #181818 */
+  --color-foreground: #181818;
+
+  /* Card */
+  --color-card: #FFFFFF;
+  --color-card-foreground: #181818;
+
+  /* Secondary - 浅灰 #F0EEE6 */
+  --color-secondary: #F0EEE6;
+  --color-secondary-foreground: #181818;
+
+  /* Muted */
+  --color-muted: #E8E6DC;
+  --color-muted-foreground: #87867F;
+
+  /* Accent */
+  --color-accent: #F0EEE6;
+  --color-accent-foreground: #181818;
+
+  /* Destructive */
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+
+  /* Border/Input */
+  --color-border: #D5D3CB;
+  --color-input: #D5D3CB;
+  --color-ring: #CC785C;
+
+  /* Legacy aliases for backwards compatibility */
   --color-text-main: #181818;
   --color-text-faded: #87867F;
-  
-  /* Light mode background colors */
   --color-bg-main: #F9F9F7;
   --color-bg-ivory-medium: #F0EEE6;
   --color-bg-oat: #F7F4EC;
   --color-bg-clay: #CC785C;
-  
-  /* Dark mode colors */
   --color-bg-dark: #141413;
   --color-bg-faded: #3D3D3A;
   --color-text-dark-main: #F9F9F7;
   --color-text-dark-faded: #87867F;
-  
-  /* Minimal separators - subtle color differences only */
   --color-separator: rgba(135, 134, 127, 0.1);
-  
-  /* Accent swatches - muted for minimal design */
+
+  /* Accent swatches */
   --color-swatch-slate-light: #87867F;
   --color-swatch-cloud-light: rgba(232, 230, 220, 0.3);
   --color-swatch-fig: rgba(180, 159, 216, 0.3);
@@ -32,19 +57,20 @@
   --color-swatch-cactus: rgba(98, 154, 144, 0.3);
   --color-swatch-sky: rgba(151, 181, 213, 0.3);
   --color-swatch-heather: rgba(210, 190, 223, 0.3);
-  
+
   /* Typography */
   --font-family-sans: 'Fira Code', ui-sans-serif, system-ui, sans-serif;
-  --font-family-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  
-  /* Minimal spacing system */
+  --font-family-serif: Georgia, 'Times New Roman', serif;
+
+  /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-s: 0.5rem;
   --spacing-m: 1rem;
   --spacing-l: 1.5rem;
   --spacing-xl: 2rem;
-  
-  /* Minimal border radius */
+
+  /* Border radius */
+  --radius: 1rem;
   --radius-s: 0.25rem;
   --radius-m: 0.5rem;
   --radius-l: 1rem;
