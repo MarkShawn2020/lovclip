@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
-import { ClipboardItem } from '../types/electron'
+import { ClipboardItem } from '../types/tauri'
 import { 
   clipboardItemsAtom, 
   searchQueryAtom, 

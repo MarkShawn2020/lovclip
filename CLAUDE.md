@@ -39,81 +39,74 @@ Reference complete design guide: file:///Users/mark/@lovstudio/design/design-gui
 
 ```bash
 pnpm install          # Install dependencies
-pnpm dev              # Start development (runs on port 7777)
-pnpm dist             # Build without publish (preferred for local builds)
-pnpm dist:mac         # Build for macOS only
+pnpm dev              # Start Vite dev server (port 7777)
+pnpm tauri:dev        # Start Tauri development
+pnpm tauri:build      # Build Tauri app
+pnpm tauri:build:mac  # Build for macOS universal
 pnpm type-check       # TypeScript type checking
-pnpm build:native     # Rebuild native modules
 ```
-
-**WARNING**: `pnpm build` publishes to GitHub - use `pnpm dist` for local builds.
 
 ## Architecture
 
-### Electron Main/Preload/Renderer Pattern
+### Tauri + React Pattern
 ```
-electron/
-├── main/index.ts       # Main process: window management, clipboard monitoring, SQLite, global shortcuts
-├── preload/index.ts    # IPC bridge: exposes clipboardAPI, windowAPI to renderer
-└── native/             # Native modules (accessibility.mm for macOS)
+src-tauri/
+├── src/
+│   ├── lib.rs              # Main entry, Tauri commands, setup
+│   ├── main.rs             # App bootstrap
+│   ├── clipboard/          # Clipboard monitoring and types
+│   ├── storage/            # State persistence (JSON files)
+│   ├── window/             # Window management
+│   └── macos/              # macOS accessibility & paste simulation
+├── tauri.conf.json         # Tauri configuration
+└── Cargo.toml              # Rust dependencies
 
 src/
-├── components/         # React components
+├── api/tauri-bridge.ts     # Frontend API layer (invoke wrapper)
+├── components/             # React components
 │   ├── ClipboardManager.tsx  # Main UI, keyboard navigation, search
-│   ├── ShareCardWindow.tsx   # Canvas-based card generation
-│   └── SettingsWindow.tsx    # Independent settings window
-├── store/atoms.ts      # Jotai atoms (clipboardItemsAtom, searchQueryAtom, etc.)
-└── types/              # TypeScript definitions
+│   ├── ArchiveLibrary.tsx    # Archive/starred items window
+│   └── SettingsWindow.tsx    # Settings window
+├── store/atoms.ts          # Jotai atoms for state management
+└── types/                  # TypeScript definitions
 ```
 
 ### Data Flow
-- **Main Process** → SQLite (`~/.neurora/lovclip/clipboard.db`) → IPC → **Renderer**
-- **Renderer** → `window.clipboardAPI` / `window.windowAPI` → IPC → **Main Process**
+- **Rust Backend** → JSON files (`~/.config/lovclip/`) → Tauri invoke → **React Frontend**
+- **React Frontend** → `clipboardAPI` / `windowAPI` (tauri-bridge.ts) → Tauri invoke → **Rust Backend**
 
-### Database Schema
-```sql
-CREATE TABLE clipboard_items (
-  id TEXT PRIMARY KEY,
-  type TEXT NOT NULL,        -- 'text' | 'image'
-  content TEXT NOT NULL,     -- text content or image path
-  preview TEXT,              -- truncated preview for images
-  timestamp INTEGER NOT NULL,
-  size TEXT,
-  expiry_time INTEGER
-)
-```
+### Key Tauri Commands (lib.rs)
+- `get_clipboard_history`, `delete_item`, `clear_history`
+- `paste_selected_item` (sets clipboard + simulates Cmd+V)
+- `star_item`, `unstar_item`, `get_starred_items`
+- `hide_window`, `toggle_window`, `open_archive_window`
+- `check_accessibility`, `request_accessibility`
 
 ### Alfred-Style Focus Management
 
 核心技术：实现无焦点抢夺的剪贴板交互
 
-**Key Window Config** (`electron/main/index.ts`):
-```typescript
-new BrowserWindow({
-  frame: false,
-  focusable: true,
-  alwaysOnTop: true,
-  skipTaskbar: true,
-  visibleOnAllWorkspaces: true
-})
+**Window Config** (`tauri.conf.json`):
+```json
+{
+  "decorations": false,
+  "transparent": true,
+  "alwaysOnTop": true,
+  "skipTaskbar": true,
+  "visible": false
+}
 ```
 
 **Flow**:
-1. `Cmd+Shift+C` → `showInactive()` (no focus steal)
-2. Global shortcuts for navigation (Up/Down/Enter/Escape)
+1. `Cmd+Shift+V` → toggle window (no focus steal)
+2. Keyboard navigation in React
 3. Selection → hide window → set clipboard → simulate `Cmd+V`
 
-Key files: `electron/main/index.ts`, `electron/native/accessibility.mm`
-
-### IPC Channels
-- `clipboard:get-items`, `clipboard:add-item`, `clipboard:delete-item`
-- `clipboard:paste-selected-item` (triggers paste to original app)
-- `window:show`, `window:hide`, `window:toggle`
-- `navigate-items`, `select-current-item` (main→renderer)
+Key files: `src-tauri/src/lib.rs`, `src-tauri/src/macos/accessibility.rs`
 
 ### State Management
 Jotai atoms in `src/store/atoms.ts`:
-- `clipboardItemsAtom` - all items from SQLite
+- `clipboardItemsAtom` - all clipboard items
 - `searchQueryAtom` - current search filter
 - `filteredItemsAtom` - derived filtered results
 - `selectedIndexAtom` - keyboard navigation index
@@ -121,12 +114,11 @@ Jotai atoms in `src/store/atoms.ts`:
 ## Build Config
 
 - **Vite**: `@/` alias → `src/`, port 7777
-- **Electron Builder**: outputs to `release/${version}/`
-- **Native Modules**: `electron/native/binding.gyp` (node-gyp)
+- **Tauri**: outputs to `src-tauri/target/release/bundle/`
 
 ## Global Shortcuts
 
-- `Cmd+Shift+C` or `Cmd+Option+C` - Toggle window
+- `Cmd+Shift+V` - Toggle window
 - `Up/Down` - Navigate items
 - `Enter` - Select and paste
 - `Escape` - Hide window

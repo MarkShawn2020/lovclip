@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem } from '../types/archive-types'
-import { ClipboardItem } from '../types/electron'
+import { ClipboardItem } from '../types/tauri'
 import './ContentTypeNavigator.css'
 
 interface ContentTypeNavigatorProps {
@@ -36,9 +36,7 @@ export default function ContentTypeNavigator({
         ...item,
         contentType,
         metadata: {
-          fileName: item.type === 'file' ? item.content : undefined,
-          fileExtension: item.type === 'file' ? ContentTypeDetector.detectFromFileName(item.content) : undefined,
-          // Additional metadata would be populated from actual file analysis
+          // File metadata would be populated from actual file analysis
         }
       }
       

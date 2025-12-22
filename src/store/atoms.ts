@@ -66,12 +66,12 @@ export const selectedIndexAtom = atom(0)
 // 剪切板项目状态
 export interface ClipboardItem {
   id: string
-  type: 'text' | 'image' | 'file'
+  type: 'text' | 'image'
   content: string
   preview?: string
   timestamp: number
   size?: string
-  
+
   // Star机制字段
   isStarred?: boolean        // 是否被收藏到档案库
   starredAt?: number         // 收藏时间戳
