@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# LovClip Release Script
+# Lovclip Release Script
 
 set -e
 
@@ -10,7 +10,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}🚀 LovClip Release Script${NC}"
+echo -e "${GREEN}🚀 Lovclip Release Script${NC}"
 echo "========================================"
 
 # Check if we're on main branch

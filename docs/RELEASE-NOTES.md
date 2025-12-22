@@ -2,7 +2,7 @@
 
 ## 🎯 配置完成
 
-LovClip项目的CI/CD流程已完全配置完成，包括以下关键修复：
+Lovclip项目的CI/CD流程已完全配置完成，包括以下关键修复：
 
 ### ✅ 已修复的问题
 
@@ -107,16 +107,16 @@ build/
 ### 📊 构建产物
 
 **macOS**:
-- `LovClip_x.x.x_universal.dmg`: 安装包
-- `LovClip_x.x.x_universal.zip`: 压缩包
+- `Lovclip_x.x.x_universal.dmg`: 安装包
+- `Lovclip_x.x.x_universal.zip`: 压缩包
 
 **Windows**:
-- `LovClip_x.x.x_x64.exe`: 安装程序
-- `LovClip_x.x.x_x64.zip`: 压缩包
+- `Lovclip_x.x.x_x64.exe`: 安装程序
+- `Lovclip_x.x.x_x64.zip`: 压缩包
 
 **Linux**:
-- `LovClip_x.x.x_x64.AppImage`: 便携应用
-- `LovClip_x.x.x_x64.deb`: Debian包
+- `Lovclip_x.x.x_x64.AppImage`: 便携应用
+- `Lovclip_x.x.x_x64.deb`: Debian包
 
 ### 🔄 自动化流程
 

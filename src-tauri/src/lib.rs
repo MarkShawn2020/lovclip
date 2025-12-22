@@ -326,7 +326,7 @@ fn setup_tray(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     };
 
-    let quit = MenuItem::with_id(app, "quit", "退出 LovClip", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "退出 Lovclip", true, None::<&str>)?;
     let show = MenuItem::with_id(app, "show", "打开剪切板", true, None::<&str>)?;
     let archive = MenuItem::with_id(app, "archive", "打开档案库", true, None::<&str>)?;
 
