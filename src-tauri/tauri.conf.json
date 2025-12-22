@@ -7,7 +7,7 @@
     "frontendDist": "../dist",
     "devUrl": "http://localhost:7777",
     "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm vite-build"
+    "beforeBuildCommand": "pnpm build"
   },
   "app": {
     "macOSPrivateApi": true,
