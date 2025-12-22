@@ -1,20 +1,10 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { ClipboardItem } from '../types/tauri'
-import { ContentType, EnhancedClipboardItem } from '../types/archive-types'
-import ContentTypeNavigator from './ContentTypeNavigator'
+import { ContentType, CONTENT_TYPE_CONFIGS, ContentTypeDetector, EnhancedClipboardItem } from '../types/archive-types'
 import ImageWaterfallLayout from './layouts/ImageWaterfallLayout'
 import TextListLayout from './layouts/TextListLayout'
 import AudioListLayout from './layouts/AudioListLayout'
 import VideoGridLayout from './layouts/VideoGridLayout'
-
-interface ArchiveCategory {
-  id: string
-  name: string
-  type: 'text' | 'image' | 'file' | 'mixed'
-  itemCount: number
-  createdAt: number
-  updatedAt: number
-}
 
 interface ArchiveLibraryProps {
   onClose?: () => void
@@ -22,13 +12,8 @@ interface ArchiveLibraryProps {
 
 export default function ArchiveLibrary({ onClose }: ArchiveLibraryProps) {
   const [starredItems, setStarredItems] = useState<ClipboardItem[]>([])
-  const [categories, setCategories] = useState<ArchiveCategory[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedContentType, setSelectedContentType] = useState<ContentType | 'all'>('all')
-  const [filteredItems, setFilteredItems] = useState<EnhancedClipboardItem[]>([])
-  const [displayItems, setDisplayItems] = useState<EnhancedClipboardItem[]>([])
-  const [showLegacyView, setShowLegacyView] = useState(false)
 
   useEffect(() => {
     const loadArchiveData = async () => {
