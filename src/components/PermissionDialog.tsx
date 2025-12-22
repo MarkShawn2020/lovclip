@@ -51,10 +51,9 @@ export default function PermissionDialog({ isOpen, onClose, onPermissionGranted 
     }
   }
 
-  const openSystemPreferences = () => {
-    // 这将通过 shell.openExternal 打开系统偏好设置
-    const url = 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility'
-    window.ipcRenderer.send('open-external-url', url)
+  const openSystemPreferences = async () => {
+    const { open } = await import('@tauri-apps/plugin-shell')
+    await open('x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility')
   }
 
   if (!isOpen) return null

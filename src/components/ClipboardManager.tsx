@@ -63,17 +63,8 @@ export default function ClipboardManager() {
     loadClipboardHistory()
     checkAccessibilityPermission()
     
-    // 监听剪切板变化
-    window.clipboardAPI.onClipboardChange((newItem: ClipboardItem) => {
-      setItems(prev => {
-        // 添加新项目，排序由atoms处理
-        return [newItem, ...prev]
-      })
-    })
-    
-    // 监听剪切板历史更新
+    // 监听剪切板历史更新（包含新增项目）
     window.clipboardAPI.onClipboardHistoryUpdate((history: ClipboardItem[]) => {
-      // 直接设置历史数据，排序由atoms处理
       setItems(history)
     })
     

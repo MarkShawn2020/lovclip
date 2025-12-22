@@ -1,0 +1,60 @@
+[package]
+name = "lovclip"
+version = "5.0.0"
+description = "A clipboard manager with Alfred-style interface"
+authors = ["MarkShawn2020"]
+license = "MIT"
+repository = "https://github.com/MarkShawn2020/lovclip"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "lovclip_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri core
+tauri = { version = "2", features = ["tray-icon", "macos-private-api"] }
+
+# Tauri plugins
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-window-state = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-log = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Clipboard
+arboard = "3"
+
+# Time
+chrono = "0.4"
+
+# Logging
+log = "0.4"
+env_logger = "0.11"
+
+# UUID
+uuid = { version = "1", features = ["v4"] }
+
+# Directories
+dirs = "5"
+
+# macOS native APIs
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.26"
+objc = "0.2"
+core-foundation = "0.10"
+core-graphics = "0.24"
+window-vibrancy = "0.5"

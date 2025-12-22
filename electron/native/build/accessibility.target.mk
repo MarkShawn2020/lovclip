@@ -8,9 +8,9 @@ DEFS_Debug := \
 	'-DUSING_V8_SHARED=1' \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-D_GLIBCXX_USE_CXX11_ABI=1' \
+	'-D_FILE_OFFSET_BITS=64' \
 	'-D_DARWIN_USE_64_BIT_INODE=1' \
 	'-D_LARGEFILE_SOURCE' \
-	'-D_FILE_OFFSET_BITS=64' \
 	'-DOPENSSL_NO_PINSHARED' \
 	'-DOPENSSL_THREADS' \
 	'-DNAPI_DISABLE_CPP_EXCEPTIONS' \
@@ -47,14 +47,14 @@ CFLAGS_OBJC_Debug :=
 CFLAGS_OBJCC_Debug :=
 
 INCS_Debug := \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/include/node \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/src \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/openssl/config \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/openssl/openssl/include \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/uv/include \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/zlib \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/v8/include \
-	-I/Users/mark/projects/nclip/node_modules/.pnpm/node-addon-api@7.1.1/node_modules/node-addon-api
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/include/node \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/src \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/openssl/config \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/openssl/openssl/include \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/uv/include \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/zlib \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/v8/include \
+	-I/Users/mark/projects/lovclip/node_modules/.pnpm/node-addon-api@7.1.1/node_modules/node-addon-api
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=accessibility' \
@@ -62,9 +62,9 @@ DEFS_Release := \
 	'-DUSING_V8_SHARED=1' \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-D_GLIBCXX_USE_CXX11_ABI=1' \
+	'-D_FILE_OFFSET_BITS=64' \
 	'-D_DARWIN_USE_64_BIT_INODE=1' \
 	'-D_LARGEFILE_SOURCE' \
-	'-D_FILE_OFFSET_BITS=64' \
 	'-DOPENSSL_NO_PINSHARED' \
 	'-DOPENSSL_THREADS' \
 	'-DNAPI_DISABLE_CPP_EXCEPTIONS' \
@@ -99,14 +99,14 @@ CFLAGS_OBJC_Release :=
 CFLAGS_OBJCC_Release :=
 
 INCS_Release := \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/include/node \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/src \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/openssl/config \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/openssl/openssl/include \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/uv/include \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/zlib \
-	-I/Users/mark/Library/Caches/node-gyp/22.15.1/deps/v8/include \
-	-I/Users/mark/projects/nclip/node_modules/.pnpm/node-addon-api@7.1.1/node_modules/node-addon-api
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/include/node \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/src \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/openssl/config \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/openssl/openssl/include \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/uv/include \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/zlib \
+	-I/Users/mark/Library/Caches/node-gyp/22.20.0/deps/v8/include \
+	-I/Users/mark/projects/lovclip/node_modules/.pnpm/node-addon-api@7.1.1/node_modules/node-addon-api
 
 OBJS := \
 	$(obj).target/$(TARGET)/accessibility.o

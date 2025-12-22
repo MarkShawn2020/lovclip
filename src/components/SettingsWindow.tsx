@@ -75,18 +75,10 @@ export default function SettingsWindow() {
     }
   }, [setWindowPosition])
 
-  // 响应主进程请求保存的窗口位置
+  // 响应主进程请求保存的窗口位置 (Tauri version - using events)
   useEffect(() => {
-    const handleRequestSavedBounds = () => {
-      // 将当前保存的位置发送给主进程
-      window.windowAPI.setSettingsBounds(windowPosition)
-    }
-
-    window.ipcRenderer.on('request-saved-bounds', handleRequestSavedBounds)
-
-    return () => {
-      window.ipcRenderer.off('request-saved-bounds', handleRequestSavedBounds)
-    }
+    // In Tauri, window state is handled by the window-state plugin automatically
+    // No manual IPC needed
   }, [windowPosition])
 
   const handleSaveSettings = async () => {
