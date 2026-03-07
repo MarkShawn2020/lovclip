@@ -308,12 +308,20 @@ pub fn run() {
         ])
         // Save state on exit
         .on_window_event(|window, event| {
-            if let tauri::WindowEvent::CloseRequested { .. } = event {
-                if let Some(state) = window.try_state::<AppState>() {
-                    if let Err(e) = state.save_all() {
-                        log::error!("Failed to save state: {}", e);
+            match event {
+                tauri::WindowEvent::CloseRequested { .. } => {
+                    if let Some(state) = window.try_state::<AppState>() {
+                        if let Err(e) = state.save_all() {
+                            log::error!("Failed to save state: {}", e);
+                        }
                     }
                 }
+                tauri::WindowEvent::Focused(false) => {
+                    if window.label() == "main" {
+                        let _ = window.hide();
+                    }
+                }
+                _ => {}
             }
         })
         .run(tauri::generate_context!())
