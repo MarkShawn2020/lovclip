@@ -425,6 +425,45 @@
     border-color: var(--color-primary);
 }
 
+.more-menu-wrapper {
+    position: relative;
+}
+
+.more-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: rgba(255, 255, 253, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border, #D5D3CB);
+    border-radius: var(--radius-m, 8px);
+    padding: 4px;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+}
+
+.more-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 10px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-s, 4px);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--color-text-main, #181818);
+    font-family: var(--font-family-sans);
+    white-space: nowrap;
+}
+
+.more-menu-item:hover {
+    background: rgba(217, 119, 87, 0.1);
+}
+
 .delete-btn:hover {
     background: rgba(204, 120, 92, 0.15);
     border-color: var(--color-bg-clay);

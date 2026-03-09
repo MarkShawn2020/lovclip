@@ -24,6 +24,8 @@ import {
   Share1Icon,
   TrashIcon,
   Cross2Icon,
+  TextAlignLeftIcon,
+  DotsVerticalIcon,
 } from '@radix-ui/react-icons'
 import './ClipboardManager.css'
 
@@ -40,7 +42,20 @@ export default function ClipboardManager() {
   const [showPermissionDialog, setShowPermissionDialog] = useState(false)
   const [hasAccessibilityPermission, setHasAccessibilityPermission] = useState(false)
   const [starredItems, setStarredItems] = useState<Set<string>>(new Set())
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false)
+  const moreMenuRef = useRef<HTMLDivElement>(null)
 
+
+  // 点击外部关闭更多菜单
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   // 加载剪切板历史和检查权限
   useEffect(() => {
@@ -365,6 +380,20 @@ export default function ClipboardManager() {
   }
 
 
+  // 重排缩进：去除每行共有的前导空格
+  const handleDedent = async (item: ClipboardItem) => {
+    if (item.type === 'image') return
+    const lines = item.content.split('\n')
+    const nonEmptyLines = lines.filter(l => l.trim().length > 0)
+    if (nonEmptyLines.length === 0) return
+    const minIndent = Math.min(...nonEmptyLines.map(l => l.match(/^(\s*)/)![1].length))
+    if (minIndent === 0) return
+    const dedented = lines.map(l => l.slice(Math.min(minIndent, l.length))).join('\n')
+    const dedentedItem = { ...item, content: dedented }
+    await window.clipboardAPI.setClipboardContent(dedentedItem)
+    setItems(prev => prev.map(i => i.id === item.id ? dedentedItem : i))
+  }
+
   // 打开档案库
   const handleOpenArchive = async () => {
     console.log('=== DEBUG: handleOpenArchive START ===')
@@ -599,19 +628,41 @@ export default function ClipboardManager() {
                       {starredItems.has(selectedItem.id) ? <StarFilledIcon className="w-4 h-4" /> : <StarIcon className="w-4 h-4" />}
                     </button>
                     <button
-                      className="action-btn share-btn"
-                      onClick={() => handleShareCard(selectedItem)}
-                      title="生成分享卡片"
-                    >
-                      <Share1Icon className="w-4 h-4" />
-                    </button>
-                    <button
                       className="action-btn delete-btn"
                       onClick={() => handleDeleteItem(selectedItem)}
                       title="删除"
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>
+                    <div className="more-menu-wrapper" ref={moreMenuRef}>
+                      <button
+                        className="action-btn"
+                        onClick={() => setMoreMenuOpen(v => !v)}
+                        title="更多操作"
+                      >
+                        <DotsVerticalIcon className="w-4 h-4" />
+                      </button>
+                      {moreMenuOpen && (
+                        <div className="more-menu">
+                          <button
+                            className="more-menu-item"
+                            onClick={() => { handleShareCard(selectedItem); setMoreMenuOpen(false) }}
+                          >
+                            <Share1Icon className="w-3.5 h-3.5" />
+                            <span>生成分享卡片</span>
+                          </button>
+                          {selectedItem.type !== 'image' && (
+                            <button
+                              className="more-menu-item"
+                              onClick={() => { handleDedent(selectedItem); setMoreMenuOpen(false) }}
+                            >
+                              <TextAlignLeftIcon className="w-3.5 h-3.5" />
+                              <span>重排缩进</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
