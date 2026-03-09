@@ -129,6 +129,22 @@ export default function ClipboardManager() {
     resetSelectedIndex()
   }, [filteredItems.length, resetSelectedIndex])
 
+  // 窗口获得焦点时重置所有 UI 状态
+  useEffect(() => {
+    const handleFocus = () => {
+      setSelectedIndex(0)
+      setSearchQuery('')
+      if (itemsContainerRef.current) {
+        itemsContainerRef.current.scrollTop = 0
+      }
+      if (searchInputRef.current) {
+        searchInputRef.current.focus()
+      }
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [setSelectedIndex, setSearchQuery])
+
   // 监听主进程发送的导航事件
   useEffect(() => {
     window.clipboardAPI.onNavigateItems((direction: 'up' | 'down') => {

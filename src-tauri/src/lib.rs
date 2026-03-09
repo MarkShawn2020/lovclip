@@ -69,17 +69,11 @@ fn set_clipboard_content(item: ClipboardItem) -> Result<bool, String> {
 
 #[tauri::command]
 async fn paste_selected_item(app: AppHandle, item: ClipboardItem) -> Result<bool, String> {
-    // Set clipboard content
     let mut clipboard = arboard::Clipboard::new().map_err(|e| e.to_string())?;
     clipboard.set_text(&item.content).map_err(|e| e.to_string())?;
 
-    // Hide window
     window::hide_window(&app);
 
-    // Small delay to ensure window is hidden
-    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-
-    // Simulate paste on macOS
     #[cfg(target_os = "macos")]
     macos::simulate_paste()?;
 
@@ -242,6 +236,15 @@ pub fn run() {
         .manage(state)
         // Setup
         .setup(move |app| {
+            // Set as accessory app: no Dock icon, no app switcher
+            #[cfg(target_os = "macos")]
+            unsafe {
+                use cocoa::appkit::NSApplication;
+                use cocoa::appkit::NSApplicationActivationPolicy;
+                let ns_app = cocoa::appkit::NSApp();
+                ns_app.setActivationPolicy_(NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory);
+            }
+
             // Setup main window effects and ensure it's hidden on startup
             if let Some(window) = app.get_webview_window("main") {
                 if let Err(e) = window::setup_main_window(&window) {
@@ -318,7 +321,7 @@ pub fn run() {
                 }
                 tauri::WindowEvent::Focused(false) => {
                     if window.label() == "main" {
-                        let _ = window.hide();
+                        window::hide_window(&window.app_handle());
                     }
                 }
                 _ => {}
