@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Lovclip",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "identifier": "com.neurora.lovclip",
   "build": {
     "frontendDist": "../dist",
