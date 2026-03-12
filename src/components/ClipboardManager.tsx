@@ -26,6 +26,7 @@ import {
   Cross2Icon,
   TextAlignLeftIcon,
   DotsVerticalIcon,
+  CodeIcon,
 } from '@radix-ui/react-icons'
 import './ClipboardManager.css'
 
@@ -410,6 +411,15 @@ export default function ClipboardManager() {
     setItems(prev => prev.map(i => i.id === item.id ? dedentedItem : i))
   }
 
+  // 用反引号包裹内容（防止路径被解析为图片）
+  const handleWrapBacktick = async (item: ClipboardItem) => {
+    if (item.type === 'image') return
+    const wrapped = '`' + item.content.trim() + '`'
+    const wrappedItem = { ...item, content: wrapped }
+    await window.clipboardAPI.setClipboardContent(wrappedItem)
+    setItems(prev => prev.map(i => i.id === item.id ? wrappedItem : i))
+  }
+
   // 打开档案库
   const handleOpenArchive = async () => {
     console.log('=== DEBUG: handleOpenArchive START ===')
@@ -674,6 +684,15 @@ export default function ClipboardManager() {
                             >
                               <TextAlignLeftIcon className="w-3.5 h-3.5" />
                               <span>重排缩进</span>
+                            </button>
+                          )}
+                          {selectedItem.type !== 'image' && (
+                            <button
+                              className="more-menu-item"
+                              onClick={() => { handleWrapBacktick(selectedItem); setMoreMenuOpen(false) }}
+                            >
+                              <CodeIcon className="w-3.5 h-3.5" />
+                              <span>包裹反引号</span>
                             </button>
                           )}
                         </div>
