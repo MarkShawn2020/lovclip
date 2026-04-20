@@ -165,6 +165,11 @@ fn open_archive_window(app: AppHandle) -> Result<(), String> {
     window::open_archive_window(&app)
 }
 
+#[tauri::command]
+fn open_settings_window(app: AppHandle) -> Result<(), String> {
+    window::open_settings_window(&app)
+}
+
 // ============ Accessibility Commands ============
 
 #[tauri::command]
@@ -302,6 +307,7 @@ pub fn run() {
             hide_window,
             toggle_window,
             open_archive_window,
+            open_settings_window,
             // Accessibility
             check_accessibility,
             request_accessibility,
@@ -312,11 +318,16 @@ pub fn run() {
         // Save state on exit
         .on_window_event(|window, event| {
             match event {
-                tauri::WindowEvent::CloseRequested { .. } => {
+                tauri::WindowEvent::CloseRequested { api, .. } => {
                     if let Some(state) = window.try_state::<AppState>() {
                         if let Err(e) = state.save_all() {
                             log::error!("Failed to save state: {}", e);
                         }
+                    }
+                    let label = window.label();
+                    if label == "settings" || label == "archive" {
+                        api.prevent_close();
+                        let _ = window.hide();
                     }
                 }
                 tauri::WindowEvent::Focused(false) => {
@@ -340,11 +351,24 @@ fn setup_tray(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     let quit = MenuItem::with_id(app, "quit", "退出 Lovclip", true, None::<&str>)?;
     let show = MenuItem::with_id(app, "show", "打开剪切板", true, None::<&str>)?;
     let archive = MenuItem::with_id(app, "archive", "打开档案库", true, None::<&str>)?;
+    let settings = MenuItem::with_id(app, "settings", "设置", true, None::<&str>)?;
 
-    let menu = Menu::with_items(app, &[&show, &archive, &quit])?;
+    let menu = Menu::with_items(app, &[&show, &archive, &settings, &quit])?;
+
+    let tray_icon_bytes = include_bytes!("../icons/tray-icon.png");
+    log::info!("tray-icon.png embedded bytes: {}", tray_icon_bytes.len());
+    let tray_icon = image::load_from_memory(tray_icon_bytes)
+        .map(|img| {
+            let rgba = img.to_rgba8();
+            let (width, height) = rgba.dimensions();
+            log::info!("tray icon decoded: {}x{}", width, height);
+            tauri::image::Image::new_owned(rgba.into_raw(), width, height)
+        })
+        .expect("failed to decode tray-icon.png");
 
     let _tray = TrayIconBuilder::new()
-        .icon(app.default_window_icon().unwrap().clone())
+        .icon(tray_icon)
+        .icon_as_template(true)
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
@@ -352,6 +376,9 @@ fn setup_tray(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
             "show" => window::toggle_window(app),
             "archive" => {
                 let _ = window::open_archive_window(app);
+            }
+            "settings" => {
+                let _ = window::open_settings_window(app);
             }
             _ => {}
         })
