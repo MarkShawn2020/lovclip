@@ -73,9 +73,54 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
           args: ${{ matrix.args }}
+
+      - name: Notarize and staple DMG (macOS only)
+        if: matrix.platform == 'macos-latest'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          DMGS=(src-tauri/target/*/release/bundle/dmg/*.dmg)
+          if [ ${#DMGS[@]} -eq 0 ]; then
+            echo "No DMG found, skipping"
+            exit 0
+          fi
+          for DMG in "${DMGS[@]}"; do
+            echo "==> Notarizing $DMG"
+            xcrun notarytool submit "$DMG" \
+              --apple-id "$APPLE_ID" \
+              --password "$APPLE_PASSWORD" \
+              --team-id "$APPLE_TEAM_ID" \
+              --wait
+            echo "==> Stapling $DMG"
+            xcrun stapler staple "$DMG"
+            xcrun stapler validate "$DMG"
+          done
+
+      - name: Upload notarized DMG to release (macOS only)
+        if: matrix.platform == 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.create-release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for DMG in src-tauri/target/*/release/bundle/dmg/*.dmg; do
+            echo "==> Uploading stapled $DMG (overwriting pre-notarization copy)"
+            gh release upload "$TAG" "$DMG" --repo "${{ github.repository }}" --clobber
+          done
 
   publish-release:
     needs: [create-release, build-tauri]
