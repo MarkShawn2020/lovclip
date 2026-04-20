@@ -1,6 +1,6 @@
 [package]
 name = "lovclip"
-version = "5.0.2"
+version = "5.1.0"
 description = "A clipboard manager with Alfred-style interface"
 authors = ["MarkShawn2020"]
 license = "MIT"
@@ -50,6 +50,13 @@ uuid = { version = "1", features = ["v4"] }
 
 # Directories
 dirs = "5"
+
+# Image loading (for tray icon)
+image = "0.25"
+
+# Regex & lazy statics
+regex = "1"
+once_cell = "1"
 
 # macOS native APIs
 [target.'cfg(target_os = "macos")'.dependencies]

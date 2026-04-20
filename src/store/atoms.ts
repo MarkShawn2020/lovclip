@@ -148,6 +148,9 @@ export interface AppSettings {
     imageDuration: number
     fileDuration: number
   }
+  formatting: {
+    wrapImagePathWithBacktick: boolean
+  }
 }
 
 // 使用 localStorage 持久化设置
@@ -162,5 +165,8 @@ export const settingsAtom = atomWithStorage<AppSettings>('lovclip-settings', {
     textDuration: 7,
     imageDuration: 3,
     fileDuration: 1
+  },
+  formatting: {
+    wrapImagePathWithBacktick: false
   }
 })

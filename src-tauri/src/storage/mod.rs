@@ -1,4 +1,4 @@
-use crate::clipboard::{ArchiveItem, ClipboardItem, StorageSettings};
+use crate::clipboard::{ArchiveItem, ClipboardItem, FormattingSettings, StorageSettings};
 use std::fs;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
@@ -85,11 +85,31 @@ pub fn save_settings(settings: &StorageSettings) -> std::io::Result<()> {
     fs::write(path, content)
 }
 
+/// Load formatting settings
+pub fn load_formatting() -> FormattingSettings {
+    let path = get_data_dir().join("formatting.json");
+    if !path.exists() {
+        return FormattingSettings::default();
+    }
+    match fs::read_to_string(&path) {
+        Ok(content) => serde_json::from_str(&content).unwrap_or_default(),
+        Err(_) => FormattingSettings::default(),
+    }
+}
+
+/// Save formatting settings
+pub fn save_formatting(settings: &FormattingSettings) -> std::io::Result<()> {
+    let path = ensure_data_dir()?.join("formatting.json");
+    let content = serde_json::to_string_pretty(settings)?;
+    fs::write(path, content)
+}
+
 /// Application state
 pub struct AppState {
     pub clipboard_history: Arc<Mutex<Vec<ClipboardItem>>>,
     pub archive_items: Arc<Mutex<Vec<ArchiveItem>>>,
     pub settings: Arc<Mutex<StorageSettings>>,
+    pub formatting: Arc<Mutex<FormattingSettings>>,
 }
 
 impl AppState {
@@ -98,6 +118,7 @@ impl AppState {
             clipboard_history: Arc::new(Mutex::new(load_history())),
             archive_items: Arc::new(Mutex::new(load_archive())),
             settings: Arc::new(Mutex::new(load_settings())),
+            formatting: Arc::new(Mutex::new(load_formatting())),
         }
     }
 
@@ -110,6 +131,9 @@ impl AppState {
         }
         if let Ok(settings) = self.settings.lock() {
             save_settings(&settings)?;
+        }
+        if let Ok(formatting) = self.formatting.lock() {
+            save_formatting(&formatting)?;
         }
         Ok(())
     }

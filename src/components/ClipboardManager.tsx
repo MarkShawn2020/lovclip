@@ -9,7 +9,8 @@ import {
   mainHistoryItemsAtom,
   starredItemsAtom,
   windowPositionAtom,
-  resetSelectedIndexAtom
+  resetSelectedIndexAtom,
+  settingsAtom
 } from '../store/atoms'
 import PermissionDialog from './PermissionDialog'
 import {
@@ -37,6 +38,7 @@ export default function ClipboardManager() {
   const [filteredItems] = useAtom(filteredItemsAtom)
   const [windowPosition, setWindowPosition] = useAtom(windowPositionAtom)
   const [, resetSelectedIndex] = useAtom(resetSelectedIndexAtom)
+  const [settings] = useAtom(settingsAtom)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const itemsContainerRef = useRef<HTMLDivElement>(null)
   const [fullscreenImage, setFullscreenImage] = useState<ClipboardItem | null>(null)
@@ -298,14 +300,43 @@ export default function ClipboardManager() {
     }
   }, [selectedIndex, filteredItems])
 
+  // 判断字符串是否看起来是图片路径
+  const IMAGE_PATH_RE = /^(?:file:\/\/)?\/?(?:[^<>"|?*\n]+\/)*[^<>"|?*/\n]+\.(png|jpe?g|gif|webp|bmp|svg|tiff?|heic|heif|avif|ico)$/i
+  const stripOuterQuotes = (s: string): string => {
+    if (s.length >= 2) {
+      const first = s[0]
+      const last = s[s.length - 1]
+      if ((first === "'" && last === "'") || (first === '"' && last === '"')) {
+        return s.slice(1, -1)
+      }
+    }
+    return s
+  }
+  const isImagePath = (content: string): boolean => {
+    const trimmed = stripOuterQuotes(content.trim())
+    if (!trimmed || trimmed.includes('\n')) return false
+    return IMAGE_PATH_RE.test(trimmed)
+  }
+
+  // 按格式化设置处理内容（图片路径自动反引号包围）
+  const applyFormatting = (item: ClipboardItem): ClipboardItem => {
+    if (item.type === 'image') return item
+    if (!settings.formatting?.wrapImagePathWithBacktick) return item
+    const trimmed = item.content.trim()
+    if (!isImagePath(trimmed)) return item
+    if (trimmed.startsWith('`') && trimmed.endsWith('`')) return item
+    return { ...item, content: '`' + stripOuterQuotes(trimmed) + '`' }
+  }
+
   // 选择项目
   const handleItemSelect = async (item: ClipboardItem, index: number) => {
     try {
       // 更新选中索引
       setSelectedIndex(index)
-      
-      await window.clipboardAPI.setClipboardContent(item)
-      console.log('Content copied to clipboard:', item.content)
+
+      const formatted = applyFormatting(item)
+      await window.clipboardAPI.setClipboardContent(formatted)
+      console.log('Content copied to clipboard:', formatted.content)
     } catch (error) {
       console.error('Failed to copy to clipboard:', error)
     }
@@ -316,9 +347,10 @@ export default function ClipboardManager() {
     try {
       // 更新选中索引
       setSelectedIndex(index)
-      
+
+      const formatted = applyFormatting(item)
       // 使用新的粘贴选中项目方法
-      const pasteResult = await window.clipboardAPI.pasteSelectedItem(item)
+      const pasteResult = await window.clipboardAPI.pasteSelectedItem(formatted)
       if (pasteResult.success) {
         console.log(`Content pasted to active app using ${pasteResult.method}`)
       } else {

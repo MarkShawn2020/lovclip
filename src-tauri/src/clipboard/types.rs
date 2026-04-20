@@ -99,3 +99,9 @@ impl StorageSettings {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct FormattingSettings {
+    #[serde(rename = "wrapImagePathWithBacktick")]
+    pub wrap_image_path_with_backtick: bool,
+}

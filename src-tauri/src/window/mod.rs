@@ -125,3 +125,17 @@ pub fn open_archive_window(app: &AppHandle) -> Result<(), String> {
 
     Ok(())
 }
+
+/// Open settings window
+pub fn open_settings_window(app: &AppHandle) -> Result<(), String> {
+    if let Some(main) = app.get_webview_window("main") {
+        let _ = main.hide();
+    }
+
+    if let Some(settings) = app.get_webview_window("settings") {
+        settings.show().map_err(|e| e.to_string())?;
+        settings.set_focus().map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}

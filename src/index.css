@@ -1,55 +1,75 @@
 @import 'tailwindcss';
+@import "tw-animate-css";
 
-/* Lovstudio Warm Academic Theme - 暖学术风格 */
-@theme {
-  /* Primary - 陶土色 Terracotta #CC785C */
-  --color-primary: #CC785C;
-  --color-primary-foreground: #FFFFFF;
+@custom-variant dark (&:is(.dark *));
 
-  /* Background - 暖米色 Warm Beige #F9F9F7 */
-  --color-background: #F9F9F7;
-  /* Foreground - 炭灰色 Charcoal #181818 */
-  --color-foreground: #181818;
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
-  /* Card */
-  --color-card: #FFFFFF;
-  --color-card-foreground: #181818;
+/*
+ * Lovstudio Warm Academic Theme (暖学术风格)
+ * 主色陶土 #CC785C · 暖米背景 #F9F9F7 · 炭灰文字 #181818
+ * 所有 shadcn token 映射到这套色卡
+ */
+:root {
+  --background: #F9F9F7;
+  --foreground: #181818;
 
-  /* Secondary - 浅灰 #F0EEE6 */
-  --color-secondary: #F0EEE6;
-  --color-secondary-foreground: #181818;
+  --card: #FFFFFF;
+  --card-foreground: #181818;
 
-  /* Muted */
-  --color-muted: #E8E6DC;
-  --color-muted-foreground: #87867F;
+  --popover: #FFFFFF;
+  --popover-foreground: #181818;
 
-  /* Accent */
-  --color-accent: #F0EEE6;
-  --color-accent-foreground: #181818;
+  --primary: #CC785C;
+  --primary-foreground: #FFFFFF;
 
-  /* Destructive */
-  --color-destructive: #DC2626;
-  --color-destructive-foreground: #FFFFFF;
+  --secondary: #F0EEE6;
+  --secondary-foreground: #181818;
 
-  /* Border/Input */
-  --color-border: #D5D3CB;
-  --color-input: #D5D3CB;
-  --color-ring: #CC785C;
+  --muted: #E8E6DC;
+  --muted-foreground: #87867F;
 
-  /* Legacy aliases for backwards compatibility */
+  --accent: #F0EEE6;
+  --accent-foreground: #181818;
+
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #D5D3CB;
+  --input: #D5D3CB;
+  --ring: #CC785C;
+
+  --sidebar: #F0EEE6;
+  --sidebar-foreground: #181818;
+  --sidebar-primary: #CC785C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(0, 0, 0, 0.04);
+  --sidebar-accent-foreground: #181818;
+  --sidebar-border: #D5D3CB;
+  --sidebar-ring: #CC785C;
+
+  --chart-1: #CC785C;
+  --chart-2: #87867F;
+  --chart-3: #629A90;
+  --chart-4: #97B5D5;
+  --chart-5: #D2BEDF;
+
+  --radius: 0.625rem;
+
+  /* Legacy aliases (used by existing *.css files) */
   --color-text-main: #181818;
   --color-text-faded: #87867F;
+  --color-text-dark-main: #F9F9F7;
+  --color-text-dark-faded: #87867F;
   --color-bg-main: #F9F9F7;
   --color-bg-ivory-medium: #F0EEE6;
   --color-bg-oat: #F7F4EC;
   --color-bg-clay: #CC785C;
   --color-bg-dark: #141413;
   --color-bg-faded: #3D3D3A;
-  --color-text-dark-main: #F9F9F7;
-  --color-text-dark-faded: #87867F;
   --color-separator: rgba(135, 134, 127, 0.1);
-
-  /* Accent swatches */
+  --color-border-default: #D5D3CB;
   --color-swatch-slate-light: #87867F;
   --color-swatch-cloud-light: rgba(232, 230, 220, 0.3);
   --color-swatch-fig: rgba(180, 159, 216, 0.3);
@@ -58,60 +78,130 @@
   --color-swatch-sky: rgba(151, 181, 213, 0.3);
   --color-swatch-heather: rgba(210, 190, 223, 0.3);
 
-  /* Typography */
   --font-family-sans: 'Fira Code', ui-sans-serif, system-ui, sans-serif;
   --font-family-serif: Georgia, 'Times New Roman', serif;
 
-  /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-s: 0.5rem;
   --spacing-m: 1rem;
   --spacing-l: 1.5rem;
   --spacing-xl: 2rem;
 
-  /* Border radius */
-  --radius: 1rem;
   --radius-s: 0.25rem;
   --radius-m: 0.5rem;
   --radius-l: 1rem;
 }
 
-/* Dark mode color mappings - minimal and subtle */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-text-main: var(--color-text-dark-main);
-    --color-bg-main: var(--color-bg-dark);
-    --color-bg-ivory-medium: var(--color-bg-faded);
-    --color-bg-oat: var(--color-bg-faded);
-    --color-swatch-cloud-light: rgba(61, 61, 58, 0.3);
-    --color-separator: rgba(135, 134, 127, 0.15);
+.dark {
+  --background: #141413;
+  --foreground: #F9F9F7;
+
+  --card: #1F1F1D;
+  --card-foreground: #F9F9F7;
+
+  --popover: #1F1F1D;
+  --popover-foreground: #F9F9F7;
+
+  --primary: #CC785C;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #3D3D3A;
+  --secondary-foreground: #F9F9F7;
+
+  --muted: #3D3D3A;
+  --muted-foreground: #A5A39B;
+
+  --accent: #3D3D3A;
+  --accent-foreground: #F9F9F7;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #CC785C;
+
+  --sidebar: #1F1F1D;
+  --sidebar-foreground: #F9F9F7;
+  --sidebar-primary: #CC785C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #F9F9F7;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #CC785C;
+
+  --color-text-main: #F9F9F7;
+  --color-bg-main: #141413;
+  --color-bg-ivory-medium: #3D3D3A;
+  --color-bg-oat: #3D3D3A;
+  --color-swatch-cloud-light: rgba(61, 61, 58, 0.3);
+  --color-separator: rgba(135, 134, 127, 0.15);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: 'Fira Code', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
   }
-}
-
-/* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
-
-* {
-  box-sizing: border-box;
-  border: none; /* Remove all borders globally */
-  outline: none; /* Remove all outlines globally */
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: var(--font-family-sans);
-  color: var(--color-text-main);
-  background: transparent; /* Transparent for window transparency */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* Prevent scrollbars in minimal design */
-}
-
-#root {
-  width: 100%;
-  height: 100%;
-  background: transparent;
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-family-sans);
+    background: transparent;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply text-foreground;
+  }
+  #root {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
 }

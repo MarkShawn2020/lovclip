@@ -37,6 +37,10 @@ export interface StorageSettings {
   fileDuration: number;
 }
 
+export interface FormattingSettings {
+  wrapImagePathWithBacktick: boolean;
+}
+
 // ============ Result Types (Electron compatibility) ============
 
 interface ApiResult {
@@ -140,6 +144,13 @@ export const clipboardAPI = {
 
   setStorageSettings: (settings: StorageSettings): Promise<boolean> =>
     invoke<boolean>('set_storage_settings', { settings }),
+
+  // Formatting settings
+  getFormattingSettings: (): Promise<FormattingSettings> =>
+    invoke<FormattingSettings>('get_formatting_settings'),
+
+  setFormattingSettings: (settings: FormattingSettings): Promise<boolean> =>
+    invoke<boolean>('set_formatting_settings', { settings }),
 
   // Cleanup (stub - TODO: implement in Rust)
   cleanupExpiredItems: async (): Promise<void> => {

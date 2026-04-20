@@ -214,12 +214,37 @@ fn set_storage_settings(
     Ok(true)
 }
 
+#[tauri::command]
+fn get_formatting_settings(state: State<AppState>) -> clipboard::FormattingSettings {
+    state
+        .formatting
+        .lock()
+        .map(|f| f.clone())
+        .unwrap_or_default()
+}
+
+#[tauri::command]
+fn set_formatting_settings(
+    state: State<AppState>,
+    settings: clipboard::FormattingSettings,
+) -> Result<bool, String> {
+    let mut current = state
+        .formatting
+        .lock()
+        .map_err(|_| "Failed to lock formatting")?;
+    *current = settings.clone();
+    drop(current);
+    storage::save_formatting(&settings).map_err(|e| e.to_string())?;
+    Ok(true)
+}
+
 // ============ Main Entry Point ============
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let state = AppState::new();
     let history_for_watcher = Arc::clone(&state.clipboard_history);
+    let formatting_for_watcher = Arc::clone(&state.formatting);
 
     tauri::Builder::default()
         // Plugins
@@ -283,7 +308,12 @@ pub fn run() {
             }
 
             // Start clipboard watcher
-            clipboard::start_clipboard_watcher(app.handle().clone(), history_for_watcher, 50);
+            clipboard::start_clipboard_watcher(
+                app.handle().clone(),
+                history_for_watcher,
+                formatting_for_watcher,
+                50,
+            );
 
             // Setup tray
             setup_tray(app)?;
@@ -314,6 +344,9 @@ pub fn run() {
             // Storage
             get_storage_settings,
             set_storage_settings,
+            // Formatting
+            get_formatting_settings,
+            set_formatting_settings,
         ])
         // Save state on exit
         .on_window_event(|window, event| {

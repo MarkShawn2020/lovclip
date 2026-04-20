@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Lovclip",
-  "version": "5.0.2",
+  "version": "5.1.0",
   "identifier": "com.neurora.lovclip",
   "build": {
     "frontendDist": "../dist",
@@ -38,6 +38,21 @@
         "height": 700,
         "minWidth": 800,
         "minHeight": 500,
+        "resizable": true,
+        "decorations": true,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "visible": false,
+        "center": true
+      },
+      {
+        "label": "settings",
+        "title": "Lovclip 设置",
+        "url": "index.html#settings",
+        "width": 800,
+        "height": 600,
+        "minWidth": 640,
+        "minHeight": 480,
         "resizable": true,
         "decorations": true,
         "transparent": false,

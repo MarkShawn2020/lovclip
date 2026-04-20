@@ -34,6 +34,10 @@ export interface StorageSettings {
   fileDuration: number
 }
 
+export interface FormattingSettings {
+  wrapImagePathWithBacktick: boolean
+}
+
 interface ApiResult {
   success: boolean
   error?: string
@@ -70,6 +74,8 @@ export interface ClipboardAPI {
   startDrag: (item: ClipboardItem) => Promise<void>
   getStorageSettings: () => Promise<StorageSettings>
   setStorageSettings: (settings: StorageSettings) => Promise<boolean>
+  getFormattingSettings: () => Promise<FormattingSettings>
+  setFormattingSettings: (settings: FormattingSettings) => Promise<boolean>
   cleanupExpiredItems: () => Promise<void>
   onClipboardChange: (callback: (item: ClipboardItem) => void) => void
   onClipboardHistoryUpdate: (callback: (items: ClipboardItem[]) => void) => void

@@ -1,0 +1,13 @@
+{
+  "name": "Lovclip",
+  "short_name": "Lovclip",
+  "description": "A clipboard manager with Alfred-style interface",
+  "icons": [
+    { "src": "/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#CC785C",
+  "background_color": "#F9F9F7",
+  "display": "standalone",
+  "start_url": "/"
+}

@@ -95,14 +95,16 @@ export default function SettingsWindow() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [storageSettings, currentShortcut] = await Promise.all([
+        const [storageSettings, formattingSettings, currentShortcut] = await Promise.all([
           window.clipboardAPI.getStorageSettings(),
+          window.clipboardAPI.getFormattingSettings(),
           window.windowAPI.getCurrentShortcut(),
         ])
 
         setLocalSettings(prev => ({
           ...prev,
           storage: storageSettings,
+          formatting: formattingSettings,
           hotkey: currentShortcut,
         }))
         setIsLoading(false)
@@ -159,11 +161,11 @@ export default function SettingsWindow() {
     }))
   }
 
-  const handleFormattingChange = (key: keyof FormattingSettings, value: boolean) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      formatting: { ...(prev.formatting ?? { wrapImagePathWithBacktick: false }), [key]: value },
-    }))
+  const handleFormattingChange = async (key: keyof FormattingSettings, value: boolean) => {
+    const next = { ...(localSettings.formatting ?? { wrapImagePathWithBacktick: false }), [key]: value }
+    setLocalSettings(prev => ({ ...prev, formatting: next }))
+    setSettings(prev => ({ ...prev, formatting: next }))
+    await window.clipboardAPI.setFormattingSettings(next)
   }
 
   const handleSettingChange = async <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
