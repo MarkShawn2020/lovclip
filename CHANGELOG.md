@@ -1,5 +1,11 @@
 ## 5.0.1
 
+## 5.1.1
+
+### Patch Changes
+
+- ci: 启用 macOS 完整签名与公证流程（app + dmg），分发可通过 Gatekeeper
+
 ## 5.1.0
 
 ### Minor Changes

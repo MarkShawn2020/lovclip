@@ -1,6 +1,6 @@
 [package]
 name = "lovclip"
-version = "5.1.0"
+version = "5.1.1"
 description = "A clipboard manager with Alfred-style interface"
 authors = ["MarkShawn2020"]
 license = "MIT"
