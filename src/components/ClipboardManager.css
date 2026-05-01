@@ -464,6 +464,24 @@
     background: rgba(217, 119, 87, 0.1);
 }
 
+.more-menu-divider {
+    height: 1px;
+    background: var(--color-border, #D5D3CB);
+    margin: 4px 6px;
+    opacity: 0.6;
+}
+
+.more-menu-label {
+    padding: 6px 10px 2px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted, #6B6760);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: var(--font-family-sans);
+    user-select: none;
+}
+
 .delete-btn:hover {
     background: rgba(204, 120, 92, 0.15);
     border-color: var(--color-bg-clay);

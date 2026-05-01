@@ -81,6 +81,12 @@ export const clipboardAPI = {
     await invoke('set_clipboard_content', { item });
   },
 
+  // Overwrite an existing item's content in place (for format actions)
+  updateItem: async (itemId: string, content: string): Promise<ApiResult> => {
+    const success = await invoke<boolean>('update_item', { itemId, content });
+    return { success };
+  },
+
   // Paste selected item (sets clipboard and simulates Cmd+V)
   pasteSelectedItem: async (item: ClipboardItem): Promise<PasteResult> => {
     const success = await invoke<boolean>('paste_selected_item', { item });

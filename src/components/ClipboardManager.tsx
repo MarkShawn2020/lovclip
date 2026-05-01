@@ -28,6 +28,7 @@ import {
   TextAlignLeftIcon,
   DotsVerticalIcon,
   CodeIcon,
+  PilcrowIcon,
 } from '@radix-ui/react-icons'
 import './ClipboardManager.css'
 
@@ -429,28 +430,44 @@ export default function ClipboardManager() {
   }
 
 
-  // 重排缩进：去除每行共有的前导空格
-  const handleDedent = async (item: ClipboardItem) => {
+  // 通用：用 transform 函数原地覆盖 item 内容（同步到 history、archive、剪贴板）
+  const applyFormat = async (
+    item: ClipboardItem,
+    transform: (s: string) => string,
+  ) => {
     if (item.type === 'image') return
-    const lines = item.content.split('\n')
-    const nonEmptyLines = lines.filter(l => l.trim().length > 0)
-    if (nonEmptyLines.length === 0) return
-    const minIndent = Math.min(...nonEmptyLines.map(l => l.match(/^(\s*)/)![1].length))
-    if (minIndent === 0) return
-    const dedented = lines.map(l => l.slice(Math.min(minIndent, l.length))).join('\n')
-    const dedentedItem = { ...item, content: dedented }
-    await window.clipboardAPI.setClipboardContent(dedentedItem)
-    setItems(prev => prev.map(i => i.id === item.id ? dedentedItem : i))
+    const next = transform(item.content)
+    if (next === item.content) return
+    const result = await window.clipboardAPI.updateItem(item.id, next)
+    if (!result.success) return
+    setItems(prev => prev.map(i => i.id === item.id ? { ...i, content: next } : i))
   }
 
+  // 重排缩进：去除每行共有的前导空格
+  const handleDedent = (item: ClipboardItem) =>
+    applyFormat(item, (content) => {
+      const lines = content.split('\n')
+      const nonEmpty = lines.filter(l => l.trim().length > 0)
+      if (nonEmpty.length === 0) return content
+      const minIndent = Math.min(...nonEmpty.map(l => l.match(/^(\s*)/)![1].length))
+      if (minIndent === 0) return content
+      return lines.map(l => l.slice(Math.min(minIndent, l.length))).join('\n')
+    })
+
   // 用反引号包裹内容（防止路径被解析为图片）
-  const handleWrapBacktick = async (item: ClipboardItem) => {
-    if (item.type === 'image') return
-    const wrapped = '`' + item.content.trim() + '`'
-    const wrappedItem = { ...item, content: wrapped }
-    await window.clipboardAPI.setClipboardContent(wrappedItem)
-    setItems(prev => prev.map(i => i.id === item.id ? wrappedItem : i))
-  }
+  const handleWrapBacktick = (item: ClipboardItem) =>
+    applyFormat(item, (content) => '`' + content.trim() + '`')
+
+  // 合并多行：终端硬换行 → 空格，保留段落分隔（双换行）
+  const handleJoinLines = (item: ClipboardItem) =>
+    applyFormat(item, (content) =>
+      content
+        .replace(/\r\n/g, '\n')
+        .split(/\n{2,}/)
+        .map(p => p.replace(/\s*\n\s*/g, ' ').replace(/[ \t]+/g, ' ').trim())
+        .filter(p => p.length > 0)
+        .join('\n\n'),
+    )
 
   // 打开档案库
   const handleOpenArchive = async () => {
@@ -710,22 +727,31 @@ export default function ClipboardManager() {
                             <span>生成分享卡片</span>
                           </button>
                           {selectedItem.type !== 'image' && (
-                            <button
-                              className="more-menu-item"
-                              onClick={() => { handleDedent(selectedItem); setMoreMenuOpen(false) }}
-                            >
-                              <TextAlignLeftIcon className="w-3.5 h-3.5" />
-                              <span>重排缩进</span>
-                            </button>
-                          )}
-                          {selectedItem.type !== 'image' && (
-                            <button
-                              className="more-menu-item"
-                              onClick={() => { handleWrapBacktick(selectedItem); setMoreMenuOpen(false) }}
-                            >
-                              <CodeIcon className="w-3.5 h-3.5" />
-                              <span>包裹反引号</span>
-                            </button>
+                            <>
+                              <div className="more-menu-divider" />
+                              <div className="more-menu-label">格式化</div>
+                              <button
+                                className="more-menu-item"
+                                onClick={() => { handleDedent(selectedItem); setMoreMenuOpen(false) }}
+                              >
+                                <TextAlignLeftIcon className="w-3.5 h-3.5" />
+                                <span>重排缩进</span>
+                              </button>
+                              <button
+                                className="more-menu-item"
+                                onClick={() => { handleJoinLines(selectedItem); setMoreMenuOpen(false) }}
+                              >
+                                <PilcrowIcon className="w-3.5 h-3.5" />
+                                <span>合并多行</span>
+                              </button>
+                              <button
+                                className="more-menu-item"
+                                onClick={() => { handleWrapBacktick(selectedItem); setMoreMenuOpen(false) }}
+                              >
+                                <CodeIcon className="w-3.5 h-3.5" />
+                                <span>包裹反引号</span>
+                              </button>
+                            </>
                           )}
                         </div>
                       )}

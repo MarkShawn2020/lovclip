@@ -47,6 +47,7 @@ pub fn start_clipboard_watcher(
     app: AppHandle,
     history: Arc<Mutex<Vec<ClipboardItem>>>,
     formatting: Arc<Mutex<FormattingSettings>>,
+    last_text: Arc<Mutex<String>>,
     max_items: usize,
 ) {
     std::thread::spawn(move || {
@@ -58,11 +59,10 @@ pub fn start_clipboard_watcher(
             }
         };
 
-        let mut last_text = String::new();
-
         loop {
             if let Ok(text) = clipboard.get_text() {
-                if !text.is_empty() && text != last_text {
+                let prev = last_text.lock().map(|g| g.clone()).unwrap_or_default();
+                if !text.is_empty() && text != prev {
                     let wrap = formatting
                         .lock()
                         .map(|f| f.wrap_image_path_with_backtick)
@@ -83,7 +83,9 @@ pub fn start_clipboard_watcher(
                         text.clone()
                     };
 
-                    last_text = final_text.clone();
+                    if let Ok(mut g) = last_text.lock() {
+                        *g = final_text.clone();
+                    }
 
                     // Semantic dedup: Finder may write the clipboard multiple
                     // times in quick succession (e.g. raw path, then shell-quoted

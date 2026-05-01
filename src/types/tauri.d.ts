@@ -63,6 +63,7 @@ export interface ClipboardAPI {
   deleteItem: (itemId: string) => Promise<ApiResult>
   clearHistory: () => Promise<boolean>
   setClipboardContent: (item: ClipboardItem) => Promise<void>
+  updateItem: (itemId: string, content: string) => Promise<ApiResult>
   pasteSelectedItem: (item: ClipboardItem) => Promise<PasteResult>
   starItem: (itemId: string, category?: string, description?: string) => Promise<ApiResult>
   unstarItem: (itemId: string) => Promise<ApiResult>

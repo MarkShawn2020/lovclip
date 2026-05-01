@@ -67,6 +67,67 @@ fn set_clipboard_content(item: ClipboardItem) -> Result<bool, String> {
     Ok(true)
 }
 
+/// Overwrite an existing item's content in place (used by format actions like
+/// dedent / wrap-backtick / join-lines). Also pushes the new content to the OS
+/// clipboard, but pre-arms the watcher's last_text so it does NOT register
+/// the change as a new entry.
+#[tauri::command]
+fn update_item(
+    state: State<AppState>,
+    item_id: String,
+    content: String,
+) -> Result<bool, String> {
+    // 1. Update history record.
+    let mut updated = false;
+    {
+        let mut history = state
+            .clipboard_history
+            .lock()
+            .map_err(|_| "Failed to lock history")?;
+        if let Some(it) = history.iter_mut().find(|i| i.id == item_id) {
+            it.content = content.clone();
+            it.preview = if content.len() > 100 {
+                Some(content.chars().take(100).collect())
+            } else {
+                Some(content.clone())
+            };
+            updated = true;
+        }
+    }
+    // 2. Also update archive (starred copy may exist; matched by id or original_id).
+    {
+        let mut archive = state
+            .archive_items
+            .lock()
+            .map_err(|_| "Failed to lock archive")?;
+        if let Some(it) = archive
+            .iter_mut()
+            .find(|i| i.id == item_id || i.original_id == item_id)
+        {
+            it.content = content.clone();
+            it.preview = if content.len() > 100 {
+                Some(content.chars().take(100).collect())
+            } else {
+                Some(content.clone())
+            };
+            updated = true;
+        }
+    }
+    if !updated {
+        return Err("Item not found".to_string());
+    }
+
+    // 3. Pre-arm the watcher to ignore this self-induced change, then write
+    //    to the OS clipboard so paste/Cmd+V uses the new content.
+    if let Ok(mut g) = state.last_clipboard_text.lock() {
+        *g = content.clone();
+    }
+    let mut clipboard = arboard::Clipboard::new().map_err(|e| e.to_string())?;
+    clipboard.set_text(&content).map_err(|e| e.to_string())?;
+
+    Ok(true)
+}
+
 #[tauri::command]
 async fn paste_selected_item(app: AppHandle, item: ClipboardItem) -> Result<bool, String> {
     let mut clipboard = arboard::Clipboard::new().map_err(|e| e.to_string())?;
@@ -245,6 +306,7 @@ pub fn run() {
     let state = AppState::new();
     let history_for_watcher = Arc::clone(&state.clipboard_history);
     let formatting_for_watcher = Arc::clone(&state.formatting);
+    let last_text_for_watcher = Arc::clone(&state.last_clipboard_text);
 
     tauri::Builder::default()
         // Plugins
@@ -312,6 +374,7 @@ pub fn run() {
                 app.handle().clone(),
                 history_for_watcher,
                 formatting_for_watcher,
+                last_text_for_watcher,
                 50,
             );
 
@@ -327,6 +390,7 @@ pub fn run() {
             delete_item,
             clear_history,
             set_clipboard_content,
+            update_item,
             paste_selected_item,
             // Archive
             star_item,

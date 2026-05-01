@@ -110,6 +110,10 @@ pub struct AppState {
     pub archive_items: Arc<Mutex<Vec<ArchiveItem>>>,
     pub settings: Arc<Mutex<StorageSettings>>,
     pub formatting: Arc<Mutex<FormattingSettings>>,
+    // Shared with the clipboard watcher so in-place edits (e.g. format actions)
+    // can preempt watcher's "new text" detection — write here BEFORE setting
+    // the OS clipboard and the watcher will skip the change.
+    pub last_clipboard_text: Arc<Mutex<String>>,
 }
 
 impl AppState {
@@ -119,6 +123,7 @@ impl AppState {
             archive_items: Arc::new(Mutex::new(load_archive())),
             settings: Arc::new(Mutex::new(load_settings())),
             formatting: Arc::new(Mutex::new(load_formatting())),
+            last_clipboard_text: Arc::new(Mutex::new(String::new())),
         }
     }
 
